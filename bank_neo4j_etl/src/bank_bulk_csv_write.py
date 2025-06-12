@@ -70,16 +70,18 @@ def load_bank_graph_from_csv() -> None:
         query = f"""
         LOAD CSV WITH HEADERS
         FROM '{CUSTOMER_CSV_PATH}' AS customers
-        MERGE (p:Customer {{id: customers.customer_id,
-                            name: customers.customer_name,
-                            email: customers.email,
-                            phone_number: customers.phone_number,
-                            address: customers.address,
-                            city: customers.city,
-                            state: customers.state,
-                            zip: customers.zip,
-                            country: customers.country
-                            }});
+        MERGE (p:Customer {{id: customers.customer_id}})
+        SET
+            p.first_name = customers.first_name,
+            p.last_name = customers.last_name,
+            p.name = customers.first_name + ' ' + customers.last_name,
+            p.email = customers.email,
+            p.phone_number = customers.phone_number,
+            p.address = customers.address,
+            p.city = customers.city,
+            p.state = customers.state,
+            p.zip_code = customers.zip_code,
+            p.country = customers.country;
         """
         _ = session.run(query, {})
 
